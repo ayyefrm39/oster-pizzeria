@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { AlertTriangle, Save } from 'lucide-react';
-import { base44 } from '@/api/base44Client';
+import { api } from '@/api/client';
 import { useSettings } from '@/lib/settings';
 import { useToast } from '@/components/ui/use-toast';
 import { dayNames } from '@/lib/openingHours';
@@ -30,8 +30,8 @@ export default function AdminSettings() {
   };
 
   const save = async () => {
-    await base44.entities.RestaurantSettings.update(form.id, {
-      restaurantName: form.restaurantName, address: form.address, phone: form.phone,
+    await api.entities.RestaurantSettings.update(form.id, {
+      privacyPolicy:form.privacyPolicy,cookieInfo:form.cookieInfo,allergenInfo:form.allergenInfo,restaurantName: form.restaurantName, address: form.address, phone: form.phone,
       openingHours: form.openingHours, deliveryEnabled: form.deliveryEnabled, pickupEnabled: form.pickupEnabled,
       deliveryFee: form.deliveryFee, minDeliveryOrder: form.minDeliveryOrder, freeDeliveryThreshold: form.freeDeliveryThreshold,
       estimatedPrepTime: form.estimatedPrepTime, acceptPreOrders: form.acceptPreOrders, ordersPaused: form.ordersPaused,
@@ -44,7 +44,7 @@ export default function AdminSettings() {
   const togglePause = async () => {
     const newVal = !form.ordersPaused;
     set('ordersPaused', newVal);
-    await base44.entities.RestaurantSettings.update(form.id, { ordersPaused: newVal });
+    await api.entities.RestaurantSettings.update(form.id, { ordersPaused: newVal });
     setSettings(s => ({ ...s, ordersPaused: newVal }));
     toast({ title: newVal ? 'Onlinebeställningar pausade' : 'Onlinebeställningar aktiverade' });
   };
@@ -79,7 +79,7 @@ export default function AdminSettings() {
           {DAYS.map(d => {
             const h = (form.openingHours || []).find(x => x.day === d) || { day: d, open: '10:00', close: '20:00', closesNextDay: false };
             return (
-              <div key={d} className="flex items-center gap-2 text-sm">
+              <div key={d} className="flex flex-wrap items-center gap-2 text-sm">
                 <span className="w-24 text-stone-600">{dayNames.sv[d]}</span>
                 <input type="time" value={h.open} onChange={e => setHour(d, 'open', e.target.value)} className="rounded-lg border border-stone-200 px-2 py-1.5" />
                 <span className="text-stone-400">–</span>
@@ -101,12 +101,17 @@ export default function AdminSettings() {
         </div>
         <Field label="Leveransområden" value={form.deliveryAreas} onChange={v => set('deliveryAreas', v)} />
         <div className="flex gap-4 pt-2">
-          <label className="flex items-center gap-2 text-sm"><input type="checkbox" checked={form.deliveryEnabled} onChange={e => set('deliveryEnabled', e.target.checked)} /> Leverans aktiv</label>
-          <label className="flex items-center gap-2 text-sm"><input type="checkbox" checked={form.pickupEnabled} onChange={e => set('pickupEnabled', e.target.checked)} /> Avhämtning aktiv</label>
-          <label className="flex items-center gap-2 text-sm"><input type="checkbox" checked={form.acceptPreOrders} onChange={e => set('acceptPreOrders', e.target.checked)} /> Förtidsbeställning</label>
+          <label className="flex flex-wrap items-center gap-2 text-sm"><input type="checkbox" checked={form.deliveryEnabled} onChange={e => set('deliveryEnabled', e.target.checked)} /> Leverans aktiv</label>
+          <label className="flex flex-wrap items-center gap-2 text-sm"><input type="checkbox" checked={form.pickupEnabled} onChange={e => set('pickupEnabled', e.target.checked)} /> Avhämtning aktiv</label>
+          <label className="flex flex-wrap items-center gap-2 text-sm"><input type="checkbox" checked={form.acceptPreOrders} onChange={e => set('acceptPreOrders', e.target.checked)} /> Förtidsbeställning</label>
         </div>
       </Section>
 
+      <Section title="Kundinformation">
+        <Field label="Integritetspolicy" value={form.privacyPolicy} onChange={v=>set('privacyPolicy',v)}/>
+        <Field label="Cookies" value={form.cookieInfo} onChange={v=>set('cookieInfo',v)}/>
+        <Field label="Allergener" value={form.allergenInfo} onChange={v=>set('allergenInfo',v)}/>
+      </Section>
       <button onClick={save} className="w-full bg-[#1f5d3a] text-white font-semibold py-3.5 rounded-full flex items-center justify-center gap-2"><Save className="w-5 h-5" /> Spara inställningar</button>
     </div>
   );
@@ -116,5 +121,5 @@ function Section({ title, children }) {
   return <div className="bg-white rounded-2xl p-4 space-y-3"><h2 className="font-semibold text-stone-900">{title}</h2>{children}</div>;
 }
 function Field({ label, value, onChange, type = 'text' }) {
-  return <div><label className="block text-xs font-medium text-stone-500 mb-1">{label}</label><input type={type} value={value || ''} onChange={e => onChange(e.target.value)} className="w-full rounded-xl border border-stone-200 p-3 text-sm focus:outline-none focus:border-[#1f5d3a]" /></div>;
+  return <div><label htmlFor={label} className="block text-xs font-medium text-stone-500 mb-1">{label}</label><input id={label} type={type} value={value ?? ''} onChange={e => onChange(e.target.value)} className="w-full rounded-xl border border-stone-200 p-3 text-sm focus:outline-none focus:border-[#1f5d3a]" /></div>;
 }

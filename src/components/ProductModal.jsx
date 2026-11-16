@@ -40,7 +40,9 @@ export default function ProductModal({ item, onClose = undefined }) {
     });
   };
 
+  const valid=groups.every(g=>!g.required || (g.type==='size'?!!size:(selected[g.id] || []).length>0));
   const handleAdd = () => {
+    if(!valid)return;
     const extras = [];
     Object.entries(selected).forEach(([gid, opts]) => {
       const g = groups.find(g => g.id === gid);
@@ -177,11 +179,11 @@ export default function ProductModal({ item, onClose = undefined }) {
         {/* Sticky add bar */}
         <div className="sticky bottom-0 bg-white border-t border-stone-100 p-4 flex items-center gap-3">
           <div className="flex items-center gap-1 bg-stone-100 rounded-full p-1">
-            <button onClick={() => setQty(Math.max(1, qty - 1))} className="w-8 h-8 rounded-full bg-white shadow-sm flex items-center justify-center"><Minus className="w-4 h-4" /></button>
+            <button aria-label="Minska antal" onClick={() => setQty(Math.max(1, qty - 1))} className="w-8 h-8 rounded-full bg-white shadow-sm flex items-center justify-center"><Minus className="w-4 h-4" /></button>
             <span className="w-8 text-center font-semibold">{qty}</span>
-            <button onClick={() => setQty(qty + 1)} className="w-8 h-8 rounded-full bg-white shadow-sm flex items-center justify-center"><Plus className="w-4 h-4" /></button>
+            <button disabled={qty>=50} aria-label="Öka antal" onClick={() => setQty(qty + 1)} className="w-8 h-8 rounded-full bg-white shadow-sm flex items-center justify-center"><Plus className="w-4 h-4" /></button>
           </div>
-          <button onClick={handleAdd} className="flex-1 bg-[#c8332a] hover:bg-[#b02b22] text-white font-semibold py-3 rounded-full transition-colors active:scale-[0.98]">
+          <button disabled={!valid} onClick={handleAdd} className="flex-1 bg-[#c8332a] hover:bg-[#b02b22] disabled:opacity-40 text-white font-semibold py-3 rounded-full transition-colors active:scale-[0.98]">
             {t('lagg_varukorg')} – {formatPrice(unitPrice * qty)}
           </button>
         </div>

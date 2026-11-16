@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { Search, X } from 'lucide-react';
 import { useI18n } from '@/lib/i18n';
-import { base44 } from '@/api/base44Client';
+import { api } from '@/api/client';
 import MenuItemCard from '@/components/MenuItemCard';
 import ProductModal from '@/components/ProductModal';
 import { useSettings } from '@/lib/settings';
@@ -16,17 +16,18 @@ export default function Menu() {
   const [query, setQuery] = useState('');
   const [modalItem, setModalItem] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [loadError,setLoadError]=useState(false);
   const status = getStatusNow(settings.openingHours);
 
   useEffect(() => {
     Promise.all([
-      base44.entities.MenuCategory.filter({ active: true }, 'sortOrder', 100),
-      base44.entities.MenuItem.filter({ active: true }, 'created_date', 500)
+      api.entities.MenuCategory.filter({ active: true }, 'sortOrder', 100),
+      api.entities.MenuItem.filter({ active: true }, 'created_date', 500)
     ]).then(([cats, its]) => {
       setCategories(cats);
       setItems(its);
       setLoading(false);
-    }).catch(() => setLoading(false));
+    }).catch(() => {setLoadError(true);setLoading(false);});
   }, []);
 
   const filtered = useMemo(() => {
@@ -77,6 +78,7 @@ export default function Menu() {
         </div>
       </div>
 
+      {loadError&&<div role="alert" className="p-4 bg-red-50 text-red-800 rounded-xl">Menyn kunde inte hämtas. <button onClick={()=>window.location.reload()} className="underline">Försök igen</button></div>}
       {/* Items */}
       {loading ? (
         <div className="space-y-3 mt-4">{Array.from({length: 6}).map((_, i) => <div key={i} className="h-28 rounded-2xl bg-white animate-pulse" />)}</div>

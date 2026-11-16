@@ -3,7 +3,7 @@ import { useOutletContext, useNavigate } from 'react-router-dom';
 import { Store, Bike, Clock, Phone, MapPin, ArrowRight, Star } from 'lucide-react';
 import { useI18n } from '@/lib/i18n';
 import { useSettings } from '@/lib/settings';
-import { base44 } from '@/api/base44Client';
+import { api } from '@/api/client';
 import { getStatusNow, formatNextOpening, sortedHours, dayNames } from '@/lib/openingHours';
 import { Image } from '@/components/ui/image';
 import MenuItemCard from '@/components/MenuItemCard';
@@ -23,7 +23,7 @@ export default function Home() {
   const status = getStatusNow(settings.openingHours);
 
   useEffect(() => {
-    base44.entities.MenuItem.filter({ popular: true, active: true, soldOut: false }, '-created_date', 6)
+    api.entities.MenuItem.filter({ popular: true, active: true, soldOut: false }, '-created_date', 6)
       .then(setPopular).catch(() => {});
   }, []);
 

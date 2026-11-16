@@ -26,7 +26,7 @@ export function CartProvider({ children }) {
     if (qty <= 0) {
       setItems(prev => prev.filter(i => i.lineId !== lineId));
     } else {
-      setItems(prev => prev.map(i => i.lineId === lineId ? { ...i, qty } : i));
+      setItems(prev => prev.map(i => i.lineId === lineId ? { ...i, qty: Math.min(50, Math.floor(qty)) } : i));
     }
   }, []);
 
@@ -37,7 +37,7 @@ export function CartProvider({ children }) {
   const clear = useCallback(() => setItems([]), []);
 
   const count = items.reduce((s, i) => s + i.qty, 0);
-  const subtotal = items.reduce((s, i) => s + i.price * i.qty, 0);
+  const subtotal = items.reduce((s, i) => s + Math.round(i.price * 100) * i.qty, 0) / 100;
 
   return (
     <CartContext.Provider value={{ items, addItem, updateQty, removeItem, clear, count, subtotal, orderType, setOrderType }}>

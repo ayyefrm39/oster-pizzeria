@@ -37,8 +37,8 @@ export default function Cart() {
 
       {/* Order type toggle */}
       <div className="flex gap-2 mb-4 bg-white p-1 rounded-full border border-stone-200">
-        <button onClick={() => setOrderType('pickup')} className={`flex-1 py-2 rounded-full text-sm font-medium transition-colors ${orderType === 'pickup' ? 'bg-[#1f5d3a] text-white' : 'text-stone-600'}`}>{t('avhamtning')}</button>
-        <button onClick={() => setOrderType('delivery')} className={`flex-1 py-2 rounded-full text-sm font-medium transition-colors ${orderType === 'delivery' ? 'bg-[#1f5d3a] text-white' : 'text-stone-600'}`}>{t('hemleverans')}</button>
+        <button disabled={!settings.pickupEnabled} onClick={() => setOrderType('pickup')} className={`flex-1 py-2 rounded-full text-sm font-medium transition-colors ${orderType === 'pickup' ? 'bg-[#1f5d3a] text-white' : 'text-stone-600'}`}>{t('avhamtning')}</button>
+        <button disabled={!settings.deliveryEnabled} onClick={() => setOrderType('delivery')} className={`flex-1 py-2 rounded-full text-sm font-medium transition-colors ${orderType === 'delivery' ? 'bg-[#1f5d3a] text-white' : 'text-stone-600'}`}>{t('hemleverans')}</button>
       </div>
 
       {/* Items */}
@@ -54,13 +54,13 @@ export default function Cart() {
               {item.notes && <div className="text-xs text-stone-400 mt-0.5 italic truncate">{item.notes}</div>}
               <div className="flex items-center justify-between mt-2">
                 <div className="flex items-center gap-1 bg-stone-100 rounded-full p-1">
-                  <button onClick={() => updateQty(item.lineId, item.qty - 1)} className="w-7 h-7 rounded-full bg-white shadow-sm flex items-center justify-center"><Minus className="w-3.5 h-3.5" /></button>
+                  <button aria-label={`Minska antal ${item.name}`} onClick={() => updateQty(item.lineId, item.qty - 1)} className="w-7 h-7 rounded-full bg-white shadow-sm flex items-center justify-center"><Minus className="w-3.5 h-3.5" /></button>
                   <span className="w-6 text-center text-sm font-semibold">{item.qty}</span>
-                  <button onClick={() => updateQty(item.lineId, item.qty + 1)} className="w-7 h-7 rounded-full bg-white shadow-sm flex items-center justify-center"><Plus className="w-3.5 h-3.5" /></button>
+                  <button aria-label={`Öka antal ${item.name}`} disabled={item.qty>=50} onClick={() => updateQty(item.lineId, item.qty + 1)} className="w-7 h-7 rounded-full bg-white shadow-sm flex items-center justify-center"><Plus className="w-3.5 h-3.5" /></button>
                 </div>
                 <div className="flex items-center gap-3">
                   <span className="font-bold text-sm">{formatPrice(item.price * item.qty)}</span>
-                  <button onClick={() => removeItem(item.lineId)} className="text-stone-300 hover:text-red-500"><Trash2 className="w-4 h-4" /></button>
+                  <button aria-label={`Ta bort ${item.name}`} onClick={() => removeItem(item.lineId)} className="text-stone-300 hover:text-red-500"><Trash2 className="w-4 h-4" /></button>
                 </div>
               </div>
             </div>

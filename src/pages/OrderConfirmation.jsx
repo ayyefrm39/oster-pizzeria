@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { CheckCircle2, Clock, MapPin, Phone, Receipt, CreditCard, RefreshCw } from 'lucide-react';
 import { useI18n } from '@/lib/i18n';
-import { base44 } from '@/api/base44Client';
+import { api } from '@/api/client';
 import { formatPrice } from '@/lib/format';
 import OrderStatusTracker from '@/components/OrderStatusTracker';
 
@@ -30,7 +30,7 @@ export default function OrderConfirmation() {
   const load = useCallback(async () => {
     if (!token) { setNotFound(true); setLoading(false); return; }
     try {
-      const res = await base44.functions.invoke('getOrderStatus', { orderId: id, token });
+      const res = await api.functions.invoke('getOrderStatus', { orderId: id, token });
       const data = res?.data?.order;
       if (!data) setNotFound(true);
       else setOrder(data);
@@ -44,7 +44,7 @@ export default function OrderConfirmation() {
   useEffect(() => {
     (async () => {
       if (params.get('betald') === '1') {
-        try { await base44.functions.invoke('confirmStripePayment', { orderId: id, token }); } catch (e) { /* webhook may already have settled it */ }
+        try { await api.functions.invoke('confirmStripePayment', { orderId: id, token }); } catch (e) { /* webhook may already have settled it */ }
       }
       await load();
     })();
@@ -53,7 +53,7 @@ export default function OrderConfirmation() {
   // Reconcile a Stripe payment that the webhook may not have delivered yet.
   useEffect(() => {
     if (order && order.paymentMethod === 'stripe' && order.paymentStatus === 'pending') {
-      base44.functions.invoke('confirmStripePayment', { orderId: id, token }).then(load).catch(() => {});
+      api.functions.invoke('confirmStripePayment', { orderId: id, token }).then(load).catch(() => {});
     }
   }, [order?.paymentStatus, order?.paymentMethod, id, token, load]);
 
@@ -67,7 +67,7 @@ export default function OrderConfirmation() {
     setPaying(true);
     setError('');
     try {
-      const res = await base44.functions.invoke('createPaymentSession', { orderId: id, token });
+      const res = await api.functions.invoke('createPaymentSession', { orderId: id, token });
       const data = res?.data || {};
       if (data.checkoutUrl) { window.location.href = data.checkoutUrl; return; }
       setError(data.error || '');

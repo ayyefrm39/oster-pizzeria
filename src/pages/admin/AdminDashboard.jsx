@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Bell, Check, X, Phone, MapPin, Bike, Package, ChefHat, Undo2 } from 'lucide-react';
-import { base44 } from '@/api/base44Client';
+import { api } from '@/api/client';
 import { useSettings } from '@/lib/settings';
 import { formatPrice, formatTime } from '@/lib/format';
 import { useToast } from '@/components/ui/use-toast';
@@ -44,13 +44,13 @@ export default function AdminDashboard() {
   const lastCountRef = useRef(0);
 
   const load = useCallback(async () => {
-    const list = await base44.entities.Order.list('-created_date', 200);
+    const list = await api.entities.Order.list('-created_date', 200);
     setOrders(list);
   }, []);
 
   useEffect(() => {
     load();
-    const unsub = base44.entities.Order.subscribe(() => { load(); });
+    const unsub = api.entities.Order.subscribe(() => { load(); });
     const interval = setInterval(load, 15000);
     return () => { try { unsub(); } catch {} clearInterval(interval); };
   }, [load]);
@@ -76,7 +76,7 @@ export default function AdminDashboard() {
   };
 
   const updateOrder = async (id, data) => {
-    await base44.entities.Order.update(id, data);
+    await api.entities.Order.update(id, data);
     await load();
   };
 
@@ -101,7 +101,7 @@ export default function AdminDashboard() {
     const id = refunding;
     setRefunding(null);
     try {
-      await base44.functions.invoke('refundOrder', { orderId: id });
+      await api.functions.invoke('refundOrder', { orderId: id });
       toast({ title: 'Betalningen återbetald' });
     } catch (e) {
       toast({ title: 'Kunde inte återbetala', description: e?.response?.data?.error || e?.message, variant: 'destructive' });
@@ -112,7 +112,7 @@ export default function AdminDashboard() {
   const togglePause = async () => {
     const newVal = !settings.ordersPaused;
     setSettings(s => ({ ...s, ordersPaused: newVal }));
-    await base44.entities.RestaurantSettings.update(settings.id, { ordersPaused: newVal });
+    await api.entities.RestaurantSettings.update(settings.id, { ordersPaused: newVal });
   };
 
   const filtered = orders.filter(o => TABS.find(tb => tb.id === tab).statuses.includes(o.status));
@@ -210,15 +210,15 @@ const PAY_STYLE = {
   failed: 'bg-red-50 text-red-700',
 };
 
-const PAY_LABEL = { paid: 'Betald', pending: 'Väntar på betalning', unpaid: 'Obetald', refunded: 'Återbetald', failed: 'Misslyckad' };
+const PAY_LABEL = { paid: 'Betald', pending: 'Väntar på betalning', unpaid: 'Obetald', refunded: 'Återbetald', failed: 'Misslyckad', refund_pending:'Återbetalning pågår' };
 
 function OrderCard({ order, unseen, onAccept, onReject, onMarkPaid, onRefund, onUpdate }) {
   const isDelivery = order.orderType === 'delivery';
-  const paymentLabel = order.paymentMethod === 'stripe' ? 'Kort/Klarna/Swish (Stripe)' : (isDelivery ? 'Betala vid leverans' : 'Betala vid avhämtning');
+  const paymentLabel = order.paymentMethod === 'stripe' ? 'Onlinebetalning (Stripe)' : (isDelivery ? 'Betala vid leverans' : 'Betala vid avhämtning');
   const created = new Date(order.created_date);
 
   return (
-    <div className={`bg-white rounded-2xl overflow-hidden ${unseen ? 'ring-2 ring-red-400' : 'border border-stone-200'}`}>
+    <div data-testid={`order-${order.id}`} className={`bg-white rounded-2xl overflow-hidden ${unseen ? 'ring-2 ring-red-400' : 'border border-stone-200'}`}>
       {unseen && <div className="bg-red-500 text-white text-xs font-bold px-4 py-1.5 flex items-center gap-2"><Bell className="w-3.5 h-3.5" /> NY BESTÄLLNING</div>}
       <div className="p-4">
         <div className="flex items-center justify-between mb-3">
@@ -242,7 +242,7 @@ function OrderCard({ order, unseen, onAccept, onReject, onMarkPaid, onRefund, on
         <div className="space-y-1 mb-3">
           {order.items.map((it, i) => (
             <div key={i} className="text-sm">
-              <span className="font-medium text-stone-800">{it.qty}× {it.name}</span>
+              <span className="font-medium text-stone-800">{it.qty}× {it.name}{it.size ? ` (${it.size})` : ''}</span>
               {it.extras?.length > 0 && <span className="text-stone-500"> + {it.extras.join(', ')}</span>}
               {it.notes && <div className="text-xs text-stone-400 italic ms-4">"{it.notes}"</div>}
             </div>
@@ -254,6 +254,7 @@ function OrderCard({ order, unseen, onAccept, onReject, onMarkPaid, onRefund, on
         <div className="flex items-center justify-between pt-3 border-t border-stone-100">
           <div className="text-sm">
             <div className="font-bold text-stone-900">{formatPrice(order.total)}</div>
+            <div className="text-sm font-semibold text-stone-800">{order.customer?.name}</div>
             <div className="text-xs text-stone-500 flex items-center gap-1"><Phone className="w-3 h-3" /> {order.customer?.phone}</div>
             {isDelivery && order.deliveryAddress && <div className="text-xs text-stone-500 flex items-start gap-1"><MapPin className="w-3 h-3 mt-0.5" /> {order.deliveryAddress.street}, {order.deliveryAddress.postal} {order.deliveryAddress.city}</div>}
           </div>

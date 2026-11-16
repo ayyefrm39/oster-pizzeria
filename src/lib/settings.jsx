@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
-import { base44 } from '@/api/base44Client';
+import { api } from '@/api/client';
 
 const SettingsContext = createContext(/** @type {any} */ (null));
 
@@ -29,7 +29,7 @@ export function SettingsProvider({ children }) {
 
   const load = useCallback(async () => {
     try {
-      const list = await base44.entities.RestaurantSettings.list();
+      const list = await api.entities.RestaurantSettings.list();
       if (list && list.length) {
         setSettings({ ...DEFAULT_SETTINGS, ...list[0], id: list[0].id });
       }

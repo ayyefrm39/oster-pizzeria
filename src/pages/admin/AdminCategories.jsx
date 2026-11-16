@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Plus, X, Edit, Trash2, ArrowUp, ArrowDown, Eye, EyeOff } from 'lucide-react';
-import { base44 } from '@/api/base44Client';
+import { api } from '@/api/client';
 import { useToast } from '@/components/ui/use-toast';
 
 export default function AdminCategories() {
@@ -9,7 +9,7 @@ export default function AdminCategories() {
   const [editing, setEditing] = useState(null);
 
   const load = async () => {
-    const list = await base44.entities.MenuCategory.filter({}, 'sortOrder', 100);
+    const list = await api.entities.MenuCategory.filter({}, 'sortOrder', 100);
     setCats(list);
   };
   useEffect(() => { load(); }, []);
@@ -19,27 +19,27 @@ export default function AdminCategories() {
     const swap = cats[idx + dir];
     if (!swap) return;
     await Promise.all([
-      base44.entities.MenuCategory.update(cat.id, { sortOrder: swap.sortOrder }),
-      base44.entities.MenuCategory.update(swap.id, { sortOrder: cat.sortOrder })
+      api.entities.MenuCategory.update(cat.id, { sortOrder: swap.sortOrder }),
+      api.entities.MenuCategory.update(swap.id, { sortOrder: cat.sortOrder })
     ]);
     load();
   };
   const toggleActive = async (cat) => {
-    await base44.entities.MenuCategory.update(cat.id, { active: !cat.active });
+    await api.entities.MenuCategory.update(cat.id, { active: !cat.active });
     load();
   };
   const remove = async (cat) => {
     if (!confirm(`Ta bort kategorin "${cat.name}"?`)) return;
-    await base44.entities.MenuCategory.delete(cat.id);
+    await api.entities.MenuCategory.delete(cat.id);
     toast({ title: 'Kategori borttagen' });
     load();
   };
   const save = async (form) => {
     if (editing.id) {
-      await base44.entities.MenuCategory.update(editing.id, form);
+      await api.entities.MenuCategory.update(editing.id, form);
     } else {
       const maxOrder = cats.reduce((m, c) => Math.max(m, c.sortOrder || 0), 0);
-      await base44.entities.MenuCategory.create({ ...form, sortOrder: maxOrder + 1 });
+      await api.entities.MenuCategory.create({ ...form, sortOrder: maxOrder + 1 });
     }
     toast({ title: 'Sparad' });
     setEditing(null); load();
@@ -63,7 +63,7 @@ export default function AdminCategories() {
               {c.description && <div className="text-xs text-stone-500">{c.description}</div>}
             </div>
             <button onClick={() => toggleActive(c)} className="w-8 h-8 flex items-center justify-center text-stone-500">{c.active ? <Eye className="w-4 h-4" /> : <EyeOff className="w-4 h-4 text-stone-300" />}</button>
-            <button onClick={() => setEditing(c)} className="w-8 h-8 rounded-full hover:bg-stone-100 flex items-center justify-center text-stone-500"><Edit className="w-4 h-4" /></button>
+            <button aria-label={`Redigera ${c.name}`} onClick={() => setEditing(c)} className="w-8 h-8 rounded-full hover:bg-stone-100 flex items-center justify-center text-stone-500"><Edit className="w-4 h-4" /></button>
             <button onClick={() => remove(c)} className="w-8 h-8 rounded-full hover:bg-red-50 flex items-center justify-center text-stone-400 hover:text-red-500"><Trash2 className="w-4 h-4" /></button>
           </div>
         ))}
@@ -84,8 +84,8 @@ function CatModal({ cat, onClose, onSave }) {
           <button onClick={onClose}><X className="w-5 h-5" /></button>
         </div>
         <div className="space-y-3">
-          <div><label className="block text-xs font-medium text-stone-500 mb-1">Namn</label><input value={name} onChange={e => setName(e.target.value)} className="w-full rounded-xl border border-stone-200 p-3 text-sm focus:outline-none focus:border-[#1f5d3a]" /></div>
-          <div><label className="block text-xs font-medium text-stone-500 mb-1">Beskrivning</label><input value={description} onChange={e => setDescription(e.target.value)} className="w-full rounded-xl border border-stone-200 p-3 text-sm focus:outline-none focus:border-[#1f5d3a]" /></div>
+          <div><label htmlFor="category-name" className="block text-xs font-medium text-stone-500 mb-1">Namn</label><input id="category-name" value={name} onChange={e => setName(e.target.value)} className="w-full rounded-xl border border-stone-200 p-3 text-sm focus:outline-none focus:border-[#1f5d3a]" /></div>
+          <div><label htmlFor="category-description" className="block text-xs font-medium text-stone-500 mb-1">Beskrivning</label><input id="category-description" value={description} onChange={e => setDescription(e.target.value)} className="w-full rounded-xl border border-stone-200 p-3 text-sm focus:outline-none focus:border-[#1f5d3a]" /></div>
         </div>
         <button onClick={() => onSave({ name, description, active: cat.active !== false })} className="w-full mt-5 bg-[#1f5d3a] text-white font-semibold py-3 rounded-full">Spara</button>
       </div>

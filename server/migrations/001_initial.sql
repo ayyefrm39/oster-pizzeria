@@ -1,0 +1,18 @@
+CREATE TABLE IF NOT EXISTS schema_migrations (version TEXT PRIMARY KEY);
+CREATE TABLE IF NOT EXISTS categories (id TEXT PRIMARY KEY, data TEXT NOT NULL CHECK(json_valid(data)));
+CREATE TABLE IF NOT EXISTS products (id TEXT PRIMARY KEY, category_id TEXT NOT NULL REFERENCES categories(id), price_minor INTEGER NOT NULL CHECK(price_minor >= 0), data TEXT NOT NULL CHECK(json_valid(data)));
+CREATE TABLE IF NOT EXISTS option_groups (id TEXT PRIMARY KEY, product_id TEXT NOT NULL REFERENCES products(id) ON DELETE CASCADE, data TEXT NOT NULL);
+CREATE TABLE IF NOT EXISTS product_options (id TEXT PRIMARY KEY, group_id TEXT NOT NULL REFERENCES option_groups(id) ON DELETE CASCADE, price_minor INTEGER NOT NULL CHECK(price_minor >= 0), data TEXT NOT NULL);
+CREATE TABLE IF NOT EXISTS settings (id TEXT PRIMARY KEY, data TEXT NOT NULL CHECK(json_valid(data)));
+CREATE TABLE IF NOT EXISTS delivery_zones (id TEXT PRIMARY KEY, data TEXT NOT NULL CHECK(json_valid(data)));
+CREATE TABLE IF NOT EXISTS offers (id TEXT PRIMARY KEY, data TEXT NOT NULL CHECK(json_valid(data)));
+CREATE TABLE IF NOT EXISTS admins (id TEXT PRIMARY KEY, email TEXT NOT NULL UNIQUE, password_hash TEXT NOT NULL, created_at TEXT NOT NULL);
+CREATE TABLE IF NOT EXISTS sessions (token_hash TEXT PRIMARY KEY, admin_id TEXT NOT NULL REFERENCES admins(id), expires_at INTEGER NOT NULL);
+CREATE TABLE IF NOT EXISTS orders (id TEXT PRIMARY KEY, order_number INTEGER NOT NULL UNIQUE, idempotency_key TEXT NOT NULL UNIQUE, request_hash TEXT NOT NULL, tracking_hash TEXT NOT NULL, tracking_token TEXT NOT NULL, total_minor INTEGER NOT NULL CHECK(total_minor >= 0), data TEXT NOT NULL CHECK(json_valid(data)));
+CREATE TABLE IF NOT EXISTS order_items (id TEXT PRIMARY KEY, order_id TEXT NOT NULL REFERENCES orders(id), product_id TEXT NOT NULL REFERENCES products(id), unit_minor INTEGER NOT NULL, quantity INTEGER NOT NULL, data TEXT NOT NULL);
+CREATE TABLE IF NOT EXISTS payments (order_id TEXT PRIMARY KEY REFERENCES orders(id), session_id TEXT UNIQUE, intent_id TEXT UNIQUE, refund_id TEXT UNIQUE);
+CREATE TABLE IF NOT EXISTS payment_events (id TEXT PRIMARY KEY, type TEXT NOT NULL, received_at TEXT NOT NULL);
+CREATE TABLE IF NOT EXISTS audit_log (id INTEGER PRIMARY KEY, actor TEXT NOT NULL, action TEXT NOT NULL, target_id TEXT NOT NULL, created_at TEXT NOT NULL);
+CREATE INDEX IF NOT EXISTS products_category_idx ON products(category_id);
+CREATE INDEX IF NOT EXISTS order_items_order_idx ON order_items(order_id);
+CREATE INDEX IF NOT EXISTS sessions_expiry_idx ON sessions(expires_at);

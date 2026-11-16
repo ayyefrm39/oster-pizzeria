@@ -2,9 +2,11 @@ import React, { useState } from 'react';
 import { Outlet, Link, useLocation, NavLink } from 'react-router-dom';
 import { LayoutDashboard, UtensilsCrossed, ListOrdered, Settings, Store, Menu as MenuIcon, X } from 'lucide-react';
 import { useI18n } from '@/lib/i18n';
+import { useAuth } from '@/lib/AuthContext';
 
 export default function AdminLayout() {
   const { t } = useI18n();
+  const {logout}=useAuth();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const location = useLocation();
 
@@ -12,6 +14,7 @@ export default function AdminLayout() {
     { to: '/admin', label: 'Beställningar', icon: LayoutDashboard, end: true },
     { to: '/admin/meny', label: 'Menyhantering', icon: UtensilsCrossed },
     { to: '/admin/kategorier', label: 'Kategorier', icon: ListOrdered },
+    { to: '/admin/drift', label: 'Leverans och erbjudanden', icon: Store },
     { to: '/admin/installningar', label: 'Inställningar', icon: Settings },
   ];
 
@@ -31,6 +34,7 @@ export default function AdminLayout() {
           ))}
         </nav>
         <div className="p-3 border-t border-stone-800">
+          <button onClick={logout} className="px-3 py-2 text-sm">Logga ut</button>
           <Link to="/" className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm text-stone-400 hover:text-white hover:bg-stone-800/50"><Store className="w-5 h-5" /> Till kundsidan</Link>
         </div>
       </aside>
@@ -56,13 +60,14 @@ export default function AdminLayout() {
                   <n.icon className="w-5 h-5" /> {n.label}
                 </NavLink>
               ))}
+              <button onClick={logout} className="px-3 py-3 text-sm">Logga ut</button>
               <Link to="/" className="flex items-center gap-3 px-3 py-3 rounded-xl text-sm text-stone-400"><Store className="w-5 h-5" /> Till kundsidan</Link>
             </nav>
           </div>
         </div>
       )}
 
-      <div className="flex-1 lg:ms-60 pt-14 lg:pt-0">
+      <div className="flex-1 min-w-0 w-full lg:ms-60 pt-14 lg:pt-0">
         <Outlet />
       </div>
     </div>

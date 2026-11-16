@@ -1,0 +1,74 @@
+{
+  "reviewed": false,
+  "source": "Partial excerpt supplied in Master Engineering Directive V2. Not a complete or current menu; ingredients and images unavailable. Proposed category label, not recovered business data.",
+  "categories": [
+    {
+      "id": "pizza-review",
+      "name": "Pizzor – utdrag för granskning",
+      "active": false,
+      "sortOrder": 0
+    }
+  ],
+  "products": [
+    {
+      "id": "review-margherita",
+      "name": "Margherita",
+      "categoryId": "pizza-review",
+      "price": 110,
+      "familyPrice": 190,
+      "active": false,
+      "image": "",
+      "description": ""
+    },
+    {
+      "id": "review-vesuvio",
+      "name": "Vesuvio",
+      "categoryId": "pizza-review",
+      "price": 120,
+      "familyPrice": 200,
+      "active": false,
+      "image": "",
+      "description": ""
+    },
+    {
+      "id": "review-hawaii",
+      "name": "Hawaii",
+      "categoryId": "pizza-review",
+      "price": 120,
+      "familyPrice": 200,
+      "active": false,
+      "image": "",
+      "description": ""
+    },
+    {
+      "id": "review-capricciosa",
+      "name": "Capricciosa",
+      "categoryId": "pizza-review",
+      "price": 125,
+      "familyPrice": 205,
+      "active": false,
+      "image": "",
+      "description": ""
+    },
+    {
+      "id": "review-afrikana",
+      "name": "Afrikana",
+      "categoryId": "pizza-review",
+      "price": 125,
+      "familyPrice": 205,
+      "active": false,
+      "image": "",
+      "description": ""
+    },
+    {
+      "id": "review-princessa",
+      "name": "Princessa",
+      "categoryId": "pizza-review",
+      "price": 130,
+      "familyPrice": 210,
+      "active": false,
+      "image": "",
+      "description": ""
+    }
+  ]
+}
