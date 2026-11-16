@@ -1,0 +1,112 @@
+{
+  "name": "MenuItem",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string"
+    },
+    "translatedNames": {
+      "type": "object"
+    },
+    "description": {
+      "type": "string"
+    },
+    "translatedDescriptions": {
+      "type": "object"
+    },
+    "categoryId": {
+      "type": "string"
+    },
+    "price": {
+      "type": "number"
+    },
+    "familyPrice": {
+      "type": "number"
+    },
+    "image": {
+      "type": "string"
+    },
+    "popular": {
+      "type": "boolean",
+      "default": false
+    },
+    "active": {
+      "type": "boolean",
+      "default": true
+    },
+    "soldOut": {
+      "type": "boolean",
+      "default": false
+    },
+    "optionGroups": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "size",
+              "extras",
+              "sauces",
+              "remove"
+            ],
+            "default": "extras"
+          },
+          "required": {
+            "type": "boolean",
+            "default": false
+          },
+          "multiple": {
+            "type": "boolean",
+            "default": true
+          },
+          "options": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "price": {
+                  "type": "number",
+                  "default": 0
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "required": [
+    "name",
+    "categoryId",
+    "price"
+  ],
+  "rls": {
+    "read": {},
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}
