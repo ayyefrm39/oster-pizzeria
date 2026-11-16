@@ -1,21 +1,29 @@
-name: Recovery build check
+name: Independent application checks
 on:
   push:
-    branches:
-      - recovery/source-reconstruction
+    branches: [recovery/source-reconstruction]
+  pull_request:
   workflow_dispatch:
 jobs:
-  build:
+  verify:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: '22'
+          node-version: '24'
           cache: npm
-          cache-dependency-path: package.json
-      - name: Install dependencies
-        run: npm install --no-audit --no-fund
-      - name: Compile recovered frontend
-        run: npm run build
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run typecheck
+      - run: npm test
+      - run: npm run build
+      - run: npx playwright install --with-deps chromium
+      - name: Browser integration tests
+        run: CHROMIUM_PATH="$(node --input-type=module -e 'import {chromium} from "@playwright/test"; process.stdout.write(chromium.executablePath())')" npm run test:browser
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: browser-results
+          path: test-results/
