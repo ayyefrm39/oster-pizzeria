@@ -18,4 +18,4 @@ export function formatTime(date, lang = 'sv') {
 export function formatDateTime(date, lang = 'sv') {
   if (!date) return '';
   return `${formatDate(date, lang)} ${formatTime(date, lang)}`;
-}import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
+}
