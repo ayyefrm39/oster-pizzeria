@@ -1,0 +1,88 @@
+{
+  "name": "RestaurantSettings",
+  "type": "object",
+  "properties": {
+    "restaurantName": {
+      "type": "string"
+    },
+    "address": {
+      "type": "string"
+    },
+    "phone": {
+      "type": "string"
+    },
+    "openingHours": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "day": {
+            "type": "number"
+          },
+          "open": {
+            "type": "string"
+          },
+          "close": {
+            "type": "string"
+          },
+          "closesNextDay": {
+            "type": "boolean"
+          }
+        }
+      }
+    },
+    "deliveryEnabled": {
+      "type": "boolean",
+      "default": true
+    },
+    "pickupEnabled": {
+      "type": "boolean",
+      "default": true
+    },
+    "deliveryFee": {
+      "type": "number",
+      "default": 0
+    },
+    "minDeliveryOrder": {
+      "type": "number",
+      "default": 0
+    },
+    "freeDeliveryThreshold": {
+      "type": "number",
+      "default": 0
+    },
+    "estimatedPrepTime": {
+      "type": "number",
+      "default": 25
+    },
+    "acceptPreOrders": {
+      "type": "boolean",
+      "default": false
+    },
+    "ordersPaused": {
+      "type": "boolean",
+      "default": false
+    },
+    "deliveryAreas": {
+      "type": "string"
+    }
+  },
+  "rls": {
+    "read": {},
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}
