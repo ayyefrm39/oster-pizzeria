@@ -9,3 +9,4 @@ export const base44 = createClient({
   functionsVersion,
   serverUrl: '',
   appBaseUrl
+});
