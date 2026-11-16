@@ -217,5 +217,4 @@ export function useI18n() {
   const ctx = useContext(I18nContext);
   if (!ctx) return { lang: 'sv', setLang: () => {}, dir: 'ltr', t: (k) => translations.sv[k] || k };
   return ctx;
-}// Opening hours engine. openingHours: array of {day, open, close, closesNextDay}
-// day = JS getDay(): 0=Sunday ... 6=Saturday
+}
