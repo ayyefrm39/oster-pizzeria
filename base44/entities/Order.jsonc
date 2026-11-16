@@ -1,0 +1,180 @@
+{
+  "name": "Order",
+  "type": "object",
+  "properties": {
+    "orderNumber": {
+      "type": "number"
+    },
+    "orderType": {
+      "type": "string",
+      "enum": [
+        "pickup",
+        "delivery"
+      ]
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "accepted",
+        "preparing",
+        "ready",
+        "out_for_delivery",
+        "completed",
+        "rejected",
+        "cancelled"
+      ],
+      "default": "pending"
+    },
+    "customer": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "phone": {
+          "type": "string"
+        }
+      }
+    },
+    "deliveryAddress": {
+      "type": "object",
+      "properties": {
+        "street": {
+          "type": "string"
+        },
+        "postal": {
+          "type": "string"
+        },
+        "city": {
+          "type": "string"
+        },
+        "apartment": {
+          "type": "string"
+        },
+        "floor": {
+          "type": "string"
+        },
+        "instructions": {
+          "type": "string"
+        }
+      }
+    },
+    "items": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "qty": {
+            "type": "number"
+          },
+          "price": {
+            "type": "number"
+          },
+          "basePrice": {
+            "type": "number"
+          },
+          "extras": {
+            "type": "array"
+          },
+          "size": {
+            "type": "string"
+          },
+          "notes": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "subtotal": {
+      "type": "number"
+    },
+    "deliveryFee": {
+      "type": "number"
+    },
+    "total": {
+      "type": "number"
+    },
+    "paymentMethod": {
+      "type": "string",
+      "enum": [
+        "stripe",
+        "cash"
+      ]
+    },
+    "paymentStatus": {
+      "type": "string",
+      "enum": [
+        "unpaid",
+        "pending",
+        "paid",
+        "refunded",
+        "failed"
+      ],
+      "default": "unpaid"
+    },
+    "paidAt": {
+      "type": "string"
+    },
+    "refundedAt": {
+      "type": "string"
+    },
+    "refundAmount": {
+      "type": "number"
+    },
+    "stripeSessionId": {
+      "type": "string"
+    },
+    "stripePaymentIntentId": {
+      "type": "string"
+    },
+    "trackingToken": {
+      "type": "string"
+    },
+    "customerNotes": {
+      "type": "string"
+    },
+    "estimatedReadyTime": {
+      "type": "number"
+    },
+    "scheduledFor": {
+      "type": "string"
+    },
+    "isDemo": {
+      "type": "boolean",
+      "default": false
+    }
+  },
+  "required": [
+    "orderNumber",
+    "orderType",
+    "status",
+    "items",
+    "total"
+  ],
+  "rls": {
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}
