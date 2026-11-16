@@ -1,3 +1,5 @@
+import { secrets } from 'base44:runtime';
+
 const API = 'https://api.stripe.com/v1';
 
 function secretKey() {
