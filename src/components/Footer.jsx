@@ -46,3 +46,27 @@ export default function Footer() {
         </div>
 
         <div>
+          <h4 className="text-white font-semibold text-sm mb-3">{t('meny')}</h4>
+          <ul className="space-y-2 text-sm">
+            <li><Link to="/" className="hover:text-white">{t('hem')}</Link></li>
+            <li><Link to="/meny" className="hover:text-white">{t('meny')}</Link></li>
+            <li><Link to="/#om" className="hover:text-white">{t('om_oss')}</Link></li>
+            <li><Link to="/#kontakt" className="hover:text-white">{t('kontakt')}</Link></li>
+          </ul>
+          <div className="mt-4"><LanguageSelector /></div>
+        </div>
+      </div>
+
+      <div className="border-t border-stone-800">
+        <div className="max-w-6xl mx-auto px-4 py-5 pb-24 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-stone-500">
+          <div>© Öster Pizzeria</div>
+          <div className="flex items-center gap-4">
+            <button className="hover:text-stone-300">{t('integritet')}</button>
+            <button className="hover:text-stone-300">{t('cookies')}</button>
+            <button className="hover:text-stone-300">{t('allergener')}</button>
+          </div>
+        </div>
+      </div>
+    </footer>
+  );
+}
