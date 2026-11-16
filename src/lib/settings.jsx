@@ -1,9 +1,10 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { base44 } from '@/api/base44Client';
 
-const SettingsContext = createContext();
+const SettingsContext = createContext(/** @type {any} */ (null));
 
 const DEFAULT_SETTINGS = {
+  id: '',
   restaurantName: 'Öster Pizzeria',
   address: 'Södergatan 20, 241 30 Eslöv',
   phone: '076-963 62 22',

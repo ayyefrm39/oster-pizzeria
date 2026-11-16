@@ -4,7 +4,7 @@ import { useI18n } from '@/lib/i18n';
 import { formatPrice } from '@/lib/format';
 import { Image } from '@/components/ui/image';
 
-export default function MenuItemCard({ item, onAdd, onSoldOut }) {
+export default function MenuItemCard({ item, onAdd, onSoldOut = undefined }) {
   const { t } = useI18n();
   const soldOut = item.soldOut;
 

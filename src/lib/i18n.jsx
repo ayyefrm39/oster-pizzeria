@@ -190,7 +190,7 @@ export const translations = {
   }
 };
 
-const I18nContext = createContext();
+const I18nContext = createContext(/** @type {any} */ (null));
 
 export function I18nProvider({ children }) {
   const [lang, setLang] = useState(() => localStorage.getItem('oster_lang') || 'sv');

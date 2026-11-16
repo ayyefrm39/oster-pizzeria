@@ -5,7 +5,7 @@ import { useCart } from '@/lib/cart';
 import { formatPrice } from '@/lib/format';
 import { Image } from '@/components/ui/image';
 
-export default function ProductModal({ item, onClose }) {
+export default function ProductModal({ item, onClose = undefined }) {
   const { t } = useI18n();
   const { addItem } = useCart();
   const [qty, setQty] = useState(1);
@@ -188,4 +188,4 @@ export default function ProductModal({ item, onClose }) {
       </div>
     </div>
   );
-}import { useEffect } from 'react';
+}

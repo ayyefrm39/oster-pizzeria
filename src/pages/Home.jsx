@@ -5,7 +5,6 @@ import { useI18n } from '@/lib/i18n';
 import { useSettings } from '@/lib/settings';
 import { base44 } from '@/api/base44Client';
 import { getStatusNow, formatNextOpening, sortedHours, dayNames } from '@/lib/openingHours';
-import { formatPrice } from '@/lib/format';
 import { Image } from '@/components/ui/image';
 import MenuItemCard from '@/components/MenuItemCard';
 import ProductModal from '@/components/ProductModal';
@@ -18,7 +17,7 @@ export default function Home() {
   const { settings } = useSettings();
   const { addItem } = useCart();
   const navigate = useNavigate();
-  const ctx = useOutletContext();
+  const ctx = /** @type {{openOrderType?: () => void}} */ (useOutletContext());
   const [popular, setPopular] = useState([]);
   const [modalItem, setModalItem] = useState(null);
   const status = getStatusNow(settings.openingHours);

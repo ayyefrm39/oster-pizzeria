@@ -5,7 +5,7 @@ import { base44 } from '@/api/base44Client';
 import MenuItemCard from '@/components/MenuItemCard';
 import ProductModal from '@/components/ProductModal';
 import { useSettings } from '@/lib/settings';
-import { getStatusNow, formatNextOpening } from '@/lib/openingHours';
+import { getStatusNow } from '@/lib/openingHours';
 
 export default function Menu() {
   const { t, lang } = useI18n();

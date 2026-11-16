@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 
-const CartContext = createContext();
+const CartContext = createContext(/** @type {any} */ (null));
 
 const STORAGE_KEY = 'oster_cart';
 const TYPE_KEY = 'oster_order_type';

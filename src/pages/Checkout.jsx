@@ -231,7 +231,7 @@ export default function Checkout() {
   );
 }
 
-function Field({ label, value, onChange, type = 'text', required, textarea, error }) {
+function Field({ label, value, onChange, type = 'text', required = false, textarea = false, error = '' }) {
   return (
     <div>
       <label className="block text-xs font-medium text-stone-500 mb-1">{label}{required && ' *'}</label>

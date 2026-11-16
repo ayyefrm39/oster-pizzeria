@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { Bell, Check, X, Clock, Phone, MapPin, Bike, Package, ChefHat, AlertTriangle, Undo2 } from 'lucide-react';
+import { Bell, Check, X, Phone, MapPin, Bike, Package, ChefHat, Undo2 } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import { useSettings } from '@/lib/settings';
 import { formatPrice, formatTime } from '@/lib/format';
@@ -16,7 +16,7 @@ const PREP_TIMES = [15, 20, 25, 30, 40, 45, 60];
 
 function playBeep() {
   try {
-    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const ctx = new (window.AudioContext)();
     let t = ctx.currentTime;
     [880, 1320, 880].forEach(f => {
       const o = ctx.createOscillator(); const g = ctx.createGain();

@@ -17,7 +17,7 @@ const SMS_RESEND_SECONDS = 30;
 // The helper also offers session.forgetDevices(code, method) for a "forget remembered devices" control.
 export default function MfaManage({ session, returnTo }) {
   const [status, setStatus] = useState(null);
-  const [view, setView] = useState({ name: "list" });
+  const [view, setView] = useState({ method: undefined, name: "list" });
   const [error, setError] = useState(null);
 
   const load = async () => {
@@ -30,14 +30,14 @@ export default function MfaManage({ session, returnTo }) {
   };
   useEffect(() => { load(); }, [session]);
 
-  const back = () => { setView({ name: "list" }); load(); };
+  const back = () => { setView({ method: undefined, name: "list" }); load(); };
 
   return (
     <div className="session-record-block">
       <MfaHeader title="Two-factor authentication"
         description="Add an extra layer of protection when signing in. You'll be asked for a code each time you sign in." />
-      {view.name === "setup" && <MfaMethodSetup session={session} method={view.method} signInPath="/mfa" onDone={back} onBack={() => setView({ name: "list" })} />}
-      {view.name === "disable" && <Disable session={session} method={view.method} onDone={back} onBack={() => setView({ name: "list" })} />}
+      {view.name === "setup" && <MfaMethodSetup session={session} method={view.method} signInPath="/mfa" onDone={back} onBack={() => setView({ method: undefined, name: "list" })} />}
+      {view.name === "disable" && <Disable session={session} method={view.method} onDone={back} onBack={() => setView({ method: undefined, name: "list" })} />}
       {view.name === "list" && (
         <div className="space-y-4">
           <MfaNotice error={error} signInPath="/mfa" />

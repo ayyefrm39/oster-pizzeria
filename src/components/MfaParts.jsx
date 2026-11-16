@@ -36,7 +36,7 @@ export function MfaScreen({ children }) {
 
 // An icon, a title and a description, then the step's controls. A title that waits for the app's
 // name is null until it loads, so the right text appears once instead of replacing a placeholder.
-export function MfaHeader({ title, description }) {
+export function MfaHeader({ title, description = undefined }) {
   return (
     <div className="flex flex-col items-center text-center mb-6">
       <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-primary mb-4">
@@ -50,7 +50,7 @@ export function MfaHeader({ title, description }) {
 
 // Six digits. Like the built-in code box, any change that leaves six digits, a paste over a full code
 // included, and the Enter key both call onComplete with the code as it stands.
-export function CodeField({ id, label = "Enter the 6-digit code", value, onChange, onComplete, hasError = false }) {
+export function CodeField({ id, label = "Enter the 6-digit code", value, onChange, onComplete = undefined, hasError = false }) {
   return (
     <div className="space-y-2">
       <Label htmlFor={id} className="block text-center font-normal text-muted-foreground">{label}</Label>
@@ -68,7 +68,7 @@ export function CodeField({ id, label = "Enter the 6-digit code", value, onChang
 }
 
 // "Didn't receive a code? Resend", counting down while a resend isn't allowed yet.
-export function ResendLine({ cooldown, disabled, onResend, error }) {
+export function ResendLine({ cooldown, disabled = undefined, onResend, error = undefined }) {
   return (
     <div className="space-y-1 text-center">
       <p className="text-sm text-muted-foreground">
@@ -161,7 +161,7 @@ function DialCodePicker({ value, onChange }) {
 
 // Dial code picker plus the number (digits only, 15 at most). Once 4 digits are in, a number that can't
 // be real is flagged as you type; `error` (from a failed send) takes the place of that message.
-export function PhoneField({ countryCode, onCountryCodeChange, phoneNumber, onPhoneNumberChange, error, onSubmit }) {
+export function PhoneField({ countryCode, onCountryCodeChange, phoneNumber, onPhoneNumberChange, error = undefined, onSubmit = undefined }) {
   const [touched, setTouched] = useState(false);
   const invalid = touched && phoneNumber.length >= 4 && !isPlausiblePhone(`${countryCode}${phoneNumber}`);
   const message = error ?? (invalid ? INVALID_PHONE : null);
@@ -208,7 +208,7 @@ export function CopyKeyButton({ text, wide = false }) {
 // An expired or used-up challenge can't be retried: send the user back through sign-in
 // (signInPath "/mfa" for factor management, whose sign-in lives on that page). The server's
 // wording for that case already says "sign in again", so it is replaced, not repeated.
-export function MfaNotice({ error, signInPath = "/login" }) {
+export function MfaNotice({ error = undefined, signInPath = "/login" }) {
   if (!error) return null;
   const returnTo = safeReturnTo();
   return (
@@ -242,7 +242,7 @@ export function useCooldown() {
     const timer = setTimeout(() => setLeft(left - 1), 1000);
     return () => clearTimeout(timer);
   }, [left]);
-  return [left, setLeft];
+  return /** @type {const} */ ([left, setLeft]);
 }
 
 // Phones and tablets run the authenticator app on this device, so a QR code can't be scanned.
